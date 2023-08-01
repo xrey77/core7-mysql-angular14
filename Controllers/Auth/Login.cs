@@ -46,6 +46,15 @@ namespace core7_msyql_angular14.Controllers.Auth
             try {
                  User xuser = _authService.SignUser(model.Username, model.Password);
                  if (xuser != null) {
+
+                    // try {
+                    //     var xroles = _authService?.Roles(xuser.Id);
+                    //     if (xroles != null) {
+                    //         Console.WriteLine("ok");
+                    //     }
+                    // } catch(Exception) {}
+                    // Console.WriteLine(xuser.Roles.GetType(e => e.RoleName);
+
                     // var token = _jwttokenservice.Authenticate(xuser).Token;
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var xkey = _configuration["AppSettings:Secret"];

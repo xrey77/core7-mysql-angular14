@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace core7_msyql_angular14.Controllers.Products
 {
-     [ApiExplorerSettings(GroupName = "Search Product Description")]
-   [ApiController]
+    [ApiExplorerSettings(GroupName = "Search Product Description")]
+    [ApiController]
     [Route("[controller]")]
     public class SearchProduct : ControllerBase {
         private IProductService _productService;

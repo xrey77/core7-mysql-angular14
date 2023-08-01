@@ -13,13 +13,29 @@ builder.Services.AddCors();
 builder.Services.AddDbContext<DataDbContext>();
 builder.Services.AddControllers();
 
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSpaStaticFiles(options => { options.RootPath = "clientapp/dist"; });
+// ============VALIDATE IF JWT TOKEN HAS BEEN GENERATED===================================
+builder.Services.AddAuthentication().AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration.GetSection("AppSettings:Secret").Value!))
+    };
+});
+//==========================================================================================
+
 builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "QATAR FOUNDATION", Description="Rest API Documentation", Version = "v1" });
+        c.SwaggerDoc("v1", new OpenApiInfo { 
+            Title = "QATAR FOUNDATION", 
+            Description="Rest API Documentation", 
+            Version = "v1" });
         c.TagActionsBy(api =>
             {
                 if (api.GroupName != null)
@@ -36,24 +52,47 @@ builder.Services.AddSwaggerGen(c =>
                 throw new InvalidOperationException("Unable to determine tag for endpoint.");
             });
         c.DocInclusionPredicate((name, api) => true);        
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+         Name = "Authorization",
+         In = ParameterLocation.Header,
+         Type = SecuritySchemeType.ApiKey,
+         Scheme = "Bearer"
+       });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+            {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+
+                },
+                new List<string>()
+            }
+        });
+        // c.AddSecurityDefinition("oath2", new OpenApiSecurityScheme 
+        // {
+        //     In = ParameterLocation.Header,
+        //     Name = "Authorization",
+        //     Type = SecuritySchemeType.ApiKey
+        // });
+        // c.OperationFilter<SecurityRequirementsOperationFilter>();
+
     });
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// ============VALIDATE IF JWT TOKEN HAS BEEN GENERATED===================================
-builder.Services.AddAuthentication().AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                builder.Configuration.GetSection("AppSettings:Secret").Value!))
-    };
-});
-//==========================================================================================
 
 var app = builder.Build();
 

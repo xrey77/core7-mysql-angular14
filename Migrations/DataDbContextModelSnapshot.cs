@@ -16,7 +16,7 @@ namespace core7_mysql_angular14.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("core7_msyql_angular14.Entities.Product", b =>
@@ -132,12 +132,8 @@ namespace core7_mysql_angular14.Migrations
                         .HasColumnName("profilepic");
 
                     b.Property<string>("Qrcodeurl")
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("text")
                         .HasColumnName("qrcodeurl");
-
-                    b.Property<string>("Roles")
-                        .HasColumnType("varchar(10)")
-                        .HasColumnName("roles");
 
                     b.Property<string>("Secretkey")
                         .HasColumnType("varchar(200)")
@@ -156,6 +152,44 @@ namespace core7_mysql_angular14.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("core7_msyql_angular14.Entities.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("rolename");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("userroles");
+                });
+
+            modelBuilder.Entity("core7_msyql_angular14.Entities.UserRole", b =>
+                {
+                    b.HasOne("core7_msyql_angular14.Entities.User", "User")
+                        .WithOne("Roles")
+                        .HasForeignKey("core7_msyql_angular14.Entities.UserRole", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("core7_msyql_angular14.Entities.User", b =>
+                {
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

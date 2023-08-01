@@ -11,6 +11,7 @@ namespace core7_msyql_angular14.Services
     public interface IAuthService {
         User SignupUser(User userdata, string passwd);
         User SignUser(string usrname, string pwd);
+        UserRole Roles(int userid);
     }
 
     public class AuthService : IAuthService
@@ -65,13 +66,21 @@ namespace core7_msyql_angular14.Services
 
             userdata.Secretkey = secretkey.ToUpper();             
             userdata.Password = BCrypt.Net.BCrypt.HashPassword(passwd);
-            userdata.Profilepic = "http://localhost:5143/resources/users/pix.png";
-            userdata.Roles="USER";
+            userdata.Profilepic = "/resources/users/pix.png";
             userdata.Isactivated = 0;
             userdata.Isblocked = 0;
             userdata.Mailtoken = 0;
-            _context.Users.Add(userdata);                
+            _context.Users.Add(userdata);                     
             _context.SaveChanges();
+
+            // ADD USER ROLES
+            int newId = userdata.Id;
+            UserRole userRole = new UserRole();
+            userRole.UserId = newId;
+            userRole.RoleName="USER";
+            _context.UserRoles.Add(userRole);
+            _context.SaveChanges();
+
             return userdata;
         }
 
@@ -93,6 +102,13 @@ namespace core7_msyql_angular14.Services
             } catch(AppException ex) {
                     throw new AppException(ex.Message);
             }            
+        }
+
+        public UserRole Roles(int userid)
+        {
+            UserRole xroles = _context.UserRoles.Where(c => c.UserId == userid).FirstOrDefault();
+            return xroles;
+            // throw new NotImplementedException();
         }
     }
 }

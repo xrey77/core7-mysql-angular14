@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace core7_msyql_angular14.Entities
 {
@@ -33,9 +34,6 @@ namespace core7_msyql_angular14.Entities
         [Column("mobile",TypeName="varchar(20)")]
         public string Mobile { get; set; }
 
-        [Column("roles",TypeName="varchar(10)")]
-        public string Roles { get; set; }
-
         [Column("isactivated")]
         public int? Isactivated {get; set;} = 0;
 
@@ -63,5 +61,11 @@ namespace core7_msyql_angular14.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DefaultValue("getutcdate()")]
         public DateTime Updated_at { get; set; }
+
+        // [Column("roles",TypeName="varchar(10)")]
+        // public string Roles { get; set; }
+
+        public UserRole Roles { get; set; }
+
     }
 }

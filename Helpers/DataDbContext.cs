@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using core7_msyql_angular14.Entities;
+// using Microsoft.Extensions.Configuration;
 
 namespace core7_msyql_angular14.Helpers
 {
@@ -18,13 +19,13 @@ namespace core7_msyql_angular14.Helpers
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = "server=127.0.0.1;user=rey;password=rey;database=core7-angular14";
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 25));
-            options.UseMySql(connectionString, serverVersion);
+            options.UseMySql(Configuration.GetConnectionString("Default"), serverVersion);
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<UserRole> UserRoles {get; set;}
 
     }
 
